@@ -15,7 +15,7 @@ bool usingDhcp = false;
 void setup() {
     Serial.begin(115200);
 
-    delay(3000);
+    delay(3000); // wait so serial port comm is open
 
     if (usingDhcp) {
         int dhcpSuccess = Ethernet.begin(mac);
