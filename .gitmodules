@@ -1,0 +1,3 @@
+[submodule "src/grbl_clearcore/src/grbl"]
+	path = src/grbl_clearcore/src/grbl
+	url = https://github.com/grblHAL/core
