@@ -22,7 +22,7 @@ bool driver_init() {
 }
 
 void settings_changed (settings_t *settings){
-
+    serialWriteS("settings_changed\n");
 }
 
 
