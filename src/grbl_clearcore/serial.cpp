@@ -6,7 +6,9 @@ extern "C" {
 #endif
 
 void serialInit() {
-  console.begin(BAUD_RATE);
+  console.begin(115200);
+  delay(2000);
+  console.println("serialInit");
 }
 
 bool serialPutC(const char c) {
