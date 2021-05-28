@@ -10,8 +10,11 @@ flash:
 reset:
 	@ openocd -f clearcore.cfg -c "init;reset;shutdown"
 
-serve:
+fserve:
 	@ openocd -f clearcore-debug.cfg -c "program /tmp/build/$(sketch).bin verify 0x4000"
+
+serve:
+	@ openocd -f clearcore-debug.cfg 
 
 gui:
 	@ gdbgui -r --host 0.0.0.0 /tmp/build/grbl_clearcore.ino.elf
