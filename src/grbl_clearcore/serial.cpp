@@ -15,8 +15,8 @@ bool serialSuspendInput (bool suspend) {
 
 void serialInit() {
   console.begin(115200);
-  delay(2000);
-  console.println("serialInit");
+  //TODO - delete this after dev complete
+  delay(2000); // wait for serial port to be opened
 }
 
 bool serialPutC(const char c) {
