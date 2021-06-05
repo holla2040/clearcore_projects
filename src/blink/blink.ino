@@ -1,4 +1,4 @@
-#define DURATION 100
+#define DURATION 1000
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
