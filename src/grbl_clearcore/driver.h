@@ -5,13 +5,16 @@
 #include "src/grbl/hal.h"
 #include "clearcore.h"
 
-#define console Serial
+#define console Serial0
 #define BAUD_RATE 115200
 
 void execute_realtime(sys_state_t state);
 void settings_changed (settings_t *settings);
 bool driver_setup(settings_t *settings);
-void limitsEnable (bool on, bool homing);
+
+static void limitsEnable (bool on, bool homing);
+inline static limit_signals_t limitsGetState();
+static void LIMIT_IRQHandler (void);                                                                                                
 
 
 uint_fast16_t spindleGetPWM (float rpm);
@@ -23,6 +26,31 @@ control_signals_t systemGetState (void);
 void spindleSetState (spindle_state_t state, float rpm);
 void coolantSetState (coolant_state_t mode);
 
+
+
+#define RX_BUFFER_SIZE 1024
+
+
+
+bool nvsRead(uint8_t *dest);
+bool nvsWrite(uint8_t *source);
+bool nvsInit(void);
+
+
+
+
+
+
+
+// guessing same53 is similar to d21
+#define STEP_TIMER          TC3
+#define STEP_TIMER_IRQn     TC3_IRQn
+
+#define STEPPER_TIMER       TC4 // 32bit - TC4 & TC5 combined!
+#define STEPPER_TIMER_IRQn  TC4_IRQn
+
+#define DEBOUNCE_TIMER      TCC1
+#define DEBOUNCE_TIMER_IRQn TCC1_IRQn
 
 
 

@@ -2,15 +2,23 @@
 #include "driver.h"
 #include "serial.h"
 
+/*
+#include <SPI.h>
+#include <SD.h>
+*/
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
+// File settingsFile;
+static axes_signals_t limit_ies;
 
 bool driver_init() {
-    hal.info = "SAME53";
-    hal.driver_version = __DATE__;
+    hal.info =		    "SAME53";
+    hal.driver_version =    __DATE__;
+    hal.driver_options =    "tbd";
+    hal.board =		    "Teknic Clearcore";
 
     serialInit();
     hal.stream.read = serialGetC;
@@ -33,19 +41,44 @@ bool driver_init() {
 
     hal.driver_cap.amass_level = 3;                                                                                   
     hal.settings_changed = settings_changed;
+
     hal.driver_setup = driver_setup;
+
     hal.limits.enable = limitsEnable;
+    hal.limits.get_state = limitsGetState;
+
     hal.spindle.set_state = spindleSetState;
+
     hal.stepper.go_idle = stepperGoIdle;
+
     hal.spindle.get_pwm = spindleGetPWM;
     hal.spindle.update_pwm = spindle_set_speed;
+
     hal.delay_ms = driver_delay_ms; 
+
     hal.control.get_state = systemGetState;
     hal.coolant.set_state = coolantSetState;
 
     grbl.on_execute_realtime = execute_realtime;
 
+    hal.nvs.type		= NVS_Flash; // NVS_Flash matches closest to SD card
+    hal.nvs.memcpy_from_flash	= nvsRead;
+    hal.nvs.memcpy_to_flash	= nvsWrite;
+
     return 1;
+}
+
+static void limitsEnable (bool on, bool homing) {
+    on = on && settings.limits.flags.hard_enabled;
+    if(on) {
+        attachInterrupt(X_LIMIT_PIN, LIMIT_IRQHandler, limit_ies.x ? FALLING : RISING);
+	attachInterrupt(Y_LIMIT_PIN, LIMIT_IRQHandler, limit_ies.y ? FALLING : RISING);
+	attachInterrupt(Z_LIMIT_PIN, LIMIT_IRQHandler, limit_ies.z ? FALLING : RISING);
+    } else {
+        detachInterrupt(X_LIMIT_PIN);
+        detachInterrupt(Y_LIMIT_PIN);
+        detachInterrupt(Z_LIMIT_PIN);
+    }
 }
 
 void settings_changed (settings_t *settings){
@@ -71,9 +104,18 @@ void spindleUpdateRPM (float rpm) {
 void spindle_set_speed (uint_fast16_t pwm_value) {
 }
 
-void limitsEnable (bool on, bool homing) {
-
+inline static limit_signals_t limitsGetState() {
 }
+
+static void LIMIT_IRQHandler(void) {
+    if(hal.driver_cap.software_debounce) {
+        DEBOUNCE_TIMER->CTRLBSET.bit.CMD = TCC_CTRLBCLR_CMD_RETRIGGER_Val;
+        while(DEBOUNCE_TIMER->SYNCBUSY.bit.CTRLB);
+    } else
+        hal.limits.interrupt_callback(limitsGetState());
+}
+
+
 
 void stepperGoIdle (bool clear_signals) {
 }
@@ -105,10 +147,34 @@ void spindleSetState (spindle_state_t state, float rpm) {
 void coolantSetState (coolant_state_t mode) {
 }
 
+bool nvsInit(void) {
+/*
+    if (!SD.begin()) {
+        console.println("SD begin failed");
+        while (true) {
+            continue;
+        }
+    }
+*/
+}
 
+bool nvsRead(uint8_t *dest) {
+/*
+    settingsFile = SD.open("settings.bin");
+    settingsFile.read(dest,GRBL_NVS_SIZE);
+    settingsFile.close();
+    return true;
+*/
+}
 
-
-
+bool nvsWrite(uint8_t *source) {
+/*
+    settingsFile = SD.open("settings.bin");
+    settingsFile.write(source,GRBL_NVS_SIZE);
+    settingsFile.close();
+    return true;
+*/
+}
 
 
 #ifdef __cplusplus
