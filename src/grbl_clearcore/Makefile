@@ -1,6 +1,7 @@
 ino = $(wildcard *.ino)
 sketch = $(shell basename `pwd`).ino
 
+
 bin:
 	arduino-cli compile -b ClearCore:sam:clearcore --build-path /tmp/build
 
@@ -23,7 +24,7 @@ debug:
 	@ gdb /tmp/build/$(sketch).elf
 
 watch:
-	@ while [ 1 ]; do clear;make; sleep 1; inotifywait -e modify *.c *.h *.ino; done
+	@ while [ 1 ]; do clear;make; sleep 1; inotifywait -e modify *.cpp *.c *.h *.ino; done
 
 clean:
-	@ rm -rf /tmp/build
+	@ rm -rf /tmp/build /tmp/cache

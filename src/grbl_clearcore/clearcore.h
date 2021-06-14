@@ -21,28 +21,11 @@
 
 #include "driver.h"
 
-#define BOARD_NAME "CNC BoosterPack"
+#define OPTIONS	    "tbd"
+#define BOARD_NAME  "Teknic ClearCore"
+#define SETTINGS_VERSION 19  // NOTE: Check settings_reset() when moving to next version
+#define N_AXIS 4
 
-#if TRINAMIC_ENABLE
-#ifdef TRINAMIC_MIXED_DRIVERS
-#undef TRINAMIC_MIXED_DRIVERS
-#endif
-#define TRINAMIC_MIXED_DRIVERS 0
-#ifdef TRINAMIC_I2C
-#undef TRINAMIC_I2C
-#endif
-#define TRINAMIC_I2C 1
-#endif
-
-#ifdef EEPROM_ENABLE
-#undef EEPROM_ENABLE
-#endif
-
-#ifdef IOEXPAND_ENABLE
-#undef IOEXPAND_ENABLE
-#endif
-
-#define EEPROM_ENABLE   1 // only change if BoosterPack does not have EEPROM mounted
 #define IOEXPAND_ENABLE 1
 
 // Define step pulse output pins.

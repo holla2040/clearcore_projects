@@ -1,24 +1,19 @@
 #include "Arduino.h"
 #include "driver.h"
 #include "serial.h"
-
-/*
-#include <SPI.h>
-#include <SD.h>
-*/
+#include "file.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// File settingsFile;
 static axes_signals_t limit_ies;
 
 bool driver_init() {
     hal.info =		    "SAME53";
     hal.driver_version =    __DATE__;
-    hal.driver_options =    "tbd";
-    hal.board =		    "Teknic Clearcore";
+    hal.driver_options =    OPTIONS;
+    hal.board =		    BOARD_NAME;
 
     serialInit();
     hal.stream.read = serialGetC;
@@ -61,9 +56,12 @@ bool driver_init() {
 
     grbl.on_execute_realtime = execute_realtime;
 
+    sdInit();
     hal.nvs.type		= NVS_Flash; // NVS_Flash matches closest to SD card
-    hal.nvs.memcpy_from_flash	= nvsRead;
-    hal.nvs.memcpy_to_flash	= nvsWrite;
+    hal.nvs.memcpy_from_flash	= sdSettingsRead;
+    hal.nvs.memcpy_to_flash	= sdSettingsWrite;
+    hal.nvs.get_byte		= sdSettingsGetByte;
+    hal.nvs.put_byte		= sdSettingsPutByte;
 
     return 1;
 }
@@ -146,36 +144,6 @@ void spindleSetState (spindle_state_t state, float rpm) {
 
 void coolantSetState (coolant_state_t mode) {
 }
-
-bool nvsInit(void) {
-/*
-    if (!SD.begin()) {
-        console.println("SD begin failed");
-        while (true) {
-            continue;
-        }
-    }
-*/
-}
-
-bool nvsRead(uint8_t *dest) {
-/*
-    settingsFile = SD.open("settings.bin");
-    settingsFile.read(dest,GRBL_NVS_SIZE);
-    settingsFile.close();
-    return true;
-*/
-}
-
-bool nvsWrite(uint8_t *source) {
-/*
-    settingsFile = SD.open("settings.bin");
-    settingsFile.write(source,GRBL_NVS_SIZE);
-    settingsFile.close();
-    return true;
-*/
-}
-
 
 #ifdef __cplusplus
 }
