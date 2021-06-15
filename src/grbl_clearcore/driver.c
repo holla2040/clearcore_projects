@@ -147,6 +147,9 @@ void spindleSetState (spindle_state_t state, float rpm) {
 }
 
 void coolantSetState (coolant_state_t mode) {
+    char line[20];
+    sprintf(line,"coolantSetState %d\n",mode);
+    serialWriteS(line);
 }
 
 
