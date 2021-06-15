@@ -56,6 +56,10 @@ bool driver_init() {
 
     grbl.on_execute_realtime = execute_realtime;
 
+    hal.set_bits_atomic = bitsSetAtomic;
+    hal.clear_bits_atomic = bitsClearAtomic;
+    hal.set_value_atomic = valueSetAtomic;
+
     sdInit();
     hal.nvs.type		= NVS_Flash; // NVS_Flash matches closest to SD card
     hal.nvs.memcpy_from_flash	= sdSettingsRead;
@@ -144,6 +148,71 @@ void spindleSetState (spindle_state_t state, float rpm) {
 
 void coolantSetState (coolant_state_t mode) {
 }
+
+
+// Helper functions for setting/clearing/inverting individual bits atomically (uninterruptable)
+static void bitsSetAtomic (volatile uint_fast16_t *ptr, uint_fast16_t bits) {
+    __disable_irq();
+    *ptr |= bits;
+    __enable_irq();
+}
+
+static uint_fast16_t bitsClearAtomic (volatile uint_fast16_t *ptr, uint_fast16_t bits) {
+    __disable_irq();
+    uint_fast16_t prev = *ptr;
+    *ptr &= ~bits;
+    __enable_irq();
+    return prev;
+}
+
+static uint_fast16_t valueSetAtomic (volatile uint_fast16_t *ptr, uint_fast16_t value) {
+    __disable_irq();
+    uint_fast16_t prev = *ptr;
+    *ptr = value;
+    __enable_irq();
+    return prev;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifdef __cplusplus
 }

@@ -36,6 +36,9 @@ bool nvsRead(uint8_t *dest);
 bool nvsWrite(uint8_t *source);
 bool nvsInit(void);
 
+static void bitsSetAtomic (volatile uint_fast16_t *ptr, uint_fast16_t bits);
+static uint_fast16_t bitsClearAtomic (volatile uint_fast16_t *ptr, uint_fast16_t bits);
+static uint_fast16_t valueSetAtomic (volatile uint_fast16_t *ptr, uint_fast16_t value);
 
 
 
