@@ -9,10 +9,6 @@ int16_t serialGetC (void) {
   return console.read();
 }
 
-bool serialSuspendInput (bool suspend) {
-  return 1;
-}
-
 void serialInit() {
   console.begin(115200);
   //TODO - delete this after dev complete
@@ -56,6 +52,9 @@ void serialRxFlush (void) {
 void serialRxCancel (void) {
 }
 
+bool serialSuspendInput (bool suspend) {
+  return 1;
+}
 
 
 
