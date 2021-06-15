@@ -18,7 +18,7 @@ serve:
 	@ openocd -f clearcore-debug.cfg 
 
 gui:
-	@ gdbgui -r --host 0.0.0.0 /tmp/build/grbl_clearcore.ino.elf
+	@ gdbgui -n -r --host 0.0.0.0 /tmp/build/grbl_clearcore.ino.elf
 
 debug:
 	@ gdb /tmp/build/$(sketch).elf
