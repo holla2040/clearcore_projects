@@ -44,7 +44,7 @@ bool sdSettingsWrite(uint8_t *source) {
 #ifdef DEBUGFILE
     console.print("sdWrite ");
 #endif
-    SD.remove("settings.bin");
+    SD.remove("settings.bin"); // FILE_WRITE is really append
     settingsFile = SD.open("settings.bin",FILE_WRITE);
     if (settingsFile) {
       settingsFile.write(source,GRBL_NVS_SIZE);
@@ -61,11 +61,19 @@ bool sdSettingsWrite(uint8_t *source) {
 }
 
 uint8_t sdSettingsGetByte(uint32_t addr) {
+  uint8_t rv;
+
 #ifdef DEBUGFILE
   console.print("sdGetByte ");
   console.println(addr,HEX);
 #endif
-  return SETTINGS_VERSION;
+
+  settingsFile = SD.open("settings.bin");
+  settingsFile.seek(addr);
+  rv = settingsFile.read();
+  settingsFile.close();
+
+  return rv;
 }
 
 void sdSettingsPutByte(uint32_t addr, uint8_t new_value) {
@@ -75,8 +83,11 @@ void sdSettingsPutByte(uint32_t addr, uint8_t new_value) {
   console.print(" ");
   console.println(new_value,HEX);
 #endif
+  settingsFile = SD.open("settings.bin",FILE_WRITE);
+  settingsFile.seek(addr);
+  settingsFile.write(new_value);
+  settingsFile.close();
 }
-
 
 #ifdef __cplusplus
 }
