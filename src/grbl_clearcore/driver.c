@@ -3,10 +3,6 @@
 #include "serial.h"
 #include "file.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 static axes_signals_t limit_ies;
 
 bool driver_init() {
@@ -117,8 +113,6 @@ static void LIMIT_IRQHandler(void) {
         hal.limits.interrupt_callback(limitsGetState());
 }
 
-
-
 void stepperGoIdle (bool clear_signals) {
 }
 
@@ -143,12 +137,33 @@ control_signals_t systemGetState (void) {
     return signals;
 }
 
-void spindleSetState (spindle_state_t state, float rpm) {
+void spindleSetState(spindle_state_t state, float rpm) {
+    char line[100];
+    serialWriteS("spindleSetState\n");
+    sprintf(line," value: %d\n mask:  %d\n on:    %d\n ccw:   %d\n pwm:   %d\n rpm:   %0.1f\n",
+	state.value,
+	state.mask,
+	state.on,
+	state.ccw,
+	state.pwm,
+	rpm);
+    serialWriteS(line);
 }
 
-void coolantSetState (coolant_state_t mode) {
+void coolantSetState(coolant_state_t mode) {
     char line[20];
-    sprintf(line,"coolantSetState %d\n",mode);
+    serialWriteS("coolantSetState\n");
+    switch (mode.value) {
+	case 0:
+	    sprintf(line," mist off\n flood off\n",mode);
+	    break;
+	case 1:
+	    sprintf(line," flood on\n",mode);
+	    break;
+	case 2:
+	    sprintf(line," mist on\n",mode);
+	    break;
+    };
     serialWriteS(line);
 }
 
@@ -176,47 +191,3 @@ static uint_fast16_t valueSetAtomic (volatile uint_fast16_t *ptr, uint_fast16_t 
     return prev;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#ifdef __cplusplus
-}
-#endif

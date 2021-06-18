@@ -26,7 +26,6 @@
 #define SETTINGS_VERSION 19  // NOTE: Check settings_reset() when moving to next version
 #define N_AXIS 4
 
-#define IOEXPAND_ENABLE 1
 
 // Define step pulse output pins.
 #define X_STEP_PIN      (19u)
@@ -56,7 +55,13 @@
 #define SPINDLE_PWM_CCREG   2
 #define SPINDLEPWMPIN       (6u)
 
-#if IOEXPAND_ENABLE
+#define COOLANT_MIST_PIN    IO0 
+#define COOLANT_FLOOD_PIN   IO1
+
+
+#define IOEXPAND_ENABLE 0
+
+#ifdef IOEXPAND_ENABLE
 
 typedef union {
     uint8_t mask;

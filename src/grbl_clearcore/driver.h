@@ -9,22 +9,22 @@
 #define BAUD_RATE 115200
 
 void execute_realtime(sys_state_t state);
-void settings_changed (settings_t *settings);
+void settings_changed(settings_t *settings);
 bool driver_setup(settings_t *settings);
 
-static void limitsEnable (bool on, bool homing);
+static void limitsEnable(bool on, bool homing);
 inline static limit_signals_t limitsGetState();
-static void LIMIT_IRQHandler (void);                                                                                                
+static void LIMIT_IRQHandler(void);                                                                                                
 
 
-uint_fast16_t spindleGetPWM (float rpm);
-void spindleUpdateRPM (float rpm);
-void spindle_set_speed (uint_fast16_t pwm_value);
-void stepperGoIdle (bool clear_signals);
-void driver_delay_ms (uint32_t ms, void (*callback)(void));
-control_signals_t systemGetState (void);
-void spindleSetState (spindle_state_t state, float rpm);
-void coolantSetState (coolant_state_t mode);
+uint_fast16_t spindleGetPWM(float rpm);
+void spindleUpdateRPM(float rpm);
+void spindle_set_speed(uint_fast16_t pwm_value);
+void stepperGoIdle(bool clear_signals);
+void driver_delay_ms(uint32_t ms, void (*callback)(void));
+control_signals_t systemGetState(void);
+void spindleSetState(spindle_state_t state, float rpm);
+void coolantSetState(coolant_state_t mode);
 
 
 
